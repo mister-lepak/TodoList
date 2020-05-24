@@ -56,15 +56,14 @@ const renderNewHTML = (item, index) => {
       checkBox.classList.add('is-active');
       checkBox.innerHTML = '<i class="far fa-check-square"></i>';
       stats[index] = 'complete';
-      window.localStorage.setItem('status', JSON.stringify(stats));
     }
     else {
       newDiv.classList.remove('strikethrough');
       checkBox.classList.remove('is-active');
       checkBox.innerHTML = '<i class="far fa-square"></i>';
       stats[index] = 'pending';
-      window.localStorage.setItem('status', JSON.stringify(stats));
     }
+    window.localStorage.setItem('status', JSON.stringify(stats));
     window.location.reload();
   });
 
