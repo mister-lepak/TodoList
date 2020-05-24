@@ -2,7 +2,7 @@ const todos = document.querySelector('#todo');
 const addButton = document.querySelector('#addButton');
 
 
-const renderNewHTML = (item) => {
+const renderNewHTML = (item, index) => {
   const grandNewDiv = document.createElement('div');
   grandNewDiv.classList.add('columns');
 
@@ -64,44 +64,38 @@ const renderNewHTML = (item) => {
     editBtn.classList.remove('is-hidden');
     newDiv.disabled = true;
     const data = localStorageDownload();
-    let index = null;
-    for(j = 0; j < data.length; j++) {
-      data[j] === item ? index = j : index = null;
-    }
-    const val = newDiv.value.includes(',') ? newDiv.value.split(',').join(';') : newDiv.value;
-    data[index] = val;
-    newDiv.value = val;
-    window.localStorage.setItem('todos', data.toString());
+    data[index] = newDiv.value;
+    window.localStorage.setItem('todos', JSON.stringify(data) );
   });
 
   deleteBtn.addEventListener('click', () => {
     grandNewDiv.remove();
-    const data = localStorageDownload().filter(val => val !== item);
-    window.localStorage.setItem('todos', data.toString());
+    const data = localStorageDownload().filter((val, i) => i !== index );
+    window.localStorage.setItem('todos', JSON.stringify(data));
   });
 };
 
 const localStorageDownload = () => {
   let existing = window.localStorage.getItem('todos');
-  existing = existing ? existing.split(',') : [];
+  existing = existing ? JSON.parse(existing) : [];
   return existing;
 };
 
 if(window.localStorage.length !== 0) {
   const info = localStorageDownload();
   for(i = 0; i < info.length; i++) {
-    renderNewHTML(info[i]);
+    renderNewHTML(info[i], i);
   }
 }
 
 
 const addItem = (todos) => {
-  const val = todos.value.includes(',') ? todos.value.split(',').join(';') : todos.value;
-  renderNewHTML(val);
-
   const data = localStorageDownload();
-  data.push(val);
-  window.localStorage.setItem('todos', data.toString());
+  const index = data.length;
+  renderNewHTML(todos.value, index);
+
+  data[index] = todos.value;
+  window.localStorage.setItem('todos', JSON.stringify(data));
 
   todos.value = "";
 };
