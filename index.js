@@ -6,8 +6,10 @@ const renderNewHTML = (item) => {
   const grandNewDiv = document.createElement('div');
   grandNewDiv.classList.add('columns');
 
-  const checkBox = document.createElement('input');
-  checkBox.setAttribute('type', 'checkbox');
+  const checkBox = document.createElement('button');
+  // checkBox.setAttribute('type', 'checkbox');
+  checkBox.classList.add('button');
+  checkBox.innerHTML = '<i class="far fa-square"></i>';
   grandNewDiv.append(checkBox);
 
   const newDiv = document.createElement('input');
@@ -38,9 +40,17 @@ const renderNewHTML = (item) => {
 
   document.querySelector('#tasks').append(grandNewDiv);
 
-  checkBox.addEventListener('change', () => {
-    if (checkBox.checked) {newDiv.classList.add('strikethrough')}
-    else {newDiv.classList.remove('strikethrough')}
+  checkBox.addEventListener('click', () => {
+    if (!checkBox.classList.contains('is-active')) {
+      newDiv.classList.add('strikethrough');
+      checkBox.classList.add('is-active');
+      checkBox.innerHTML = '<i class="far fa-check-square"></i>';
+    }
+    else {
+      newDiv.classList.remove('strikethrough');
+      checkBox.classList.remove('is-active');
+      checkBox.innerHTML = '<i class="far fa-square"></i>';
+    }
   });
 
   editBtn.addEventListener('click', () => {
