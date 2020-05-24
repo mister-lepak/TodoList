@@ -53,7 +53,15 @@ const renderNewHTML = (item) => {
     saveEditBtn.classList.add('is-hidden');
     editBtn.classList.remove('is-hidden');
     newDiv.disabled = true;
-    // window.localStorage.setItem(index, JSON.stringify(newDiv.value));
+    const data = localStorageDownload();
+    let index = null;
+    for(j = 0; j < data.length; j++) {
+      data[j] === item ? index = j : index = null;
+    }
+    const val = newDiv.value.includes(',') ? newDiv.value.split(',').join(';') : newDiv.value;
+    data[index] = val;
+    newDiv.value = val;
+    window.localStorage.setItem('todos', data.toString());
   });
 
   deleteBtn.addEventListener('click', () => {
@@ -78,10 +86,11 @@ if(window.localStorage.length !== 0) {
 
 
 const addItem = (todos) => {
-  renderNewHTML(todos.value);
+  const val = todos.value.includes(',') ? todos.value.split(',').join(';') : todos.value;
+  renderNewHTML(val);
 
   const data = localStorageDownload();
-  data.push(todos.value);
+  data.push(val);
   window.localStorage.setItem('todos', data.toString());
 
   todos.value = "";
