@@ -19,15 +19,15 @@ const renderNewHTML = (item, index) => {
 
   const checkBox = document.createElement('button');
   checkBox.classList.add('button');
-  console.log(stats[index]);
-  if (stats[index] === 'pending') {
-    checkBox.innerHTML = '<i class="far fa-square"></i>';
-    newDiv.classList.remove('strikethrough');
-    checkBox.classList.remove('is-active');
-  } else {
+  if (stats[index] === 'complete') {
     newDiv.classList.add('strikethrough');
     checkBox.classList.add('is-active');
     checkBox.innerHTML = '<i class="far fa-check-square"></i>';
+
+  } else {
+    checkBox.innerHTML = '<i class="far fa-square"></i>';
+    newDiv.classList.remove('strikethrough');
+    checkBox.classList.remove('is-active');
   }
   grandNewDiv.append(checkBox);
 
@@ -50,20 +50,22 @@ const renderNewHTML = (item, index) => {
   document.querySelector('#tasks').append(grandNewDiv);
 
   checkBox.addEventListener('click', () => {
+    const stats = statsDownload();
     if (!checkBox.classList.contains('is-active')) {
       newDiv.classList.add('strikethrough');
       checkBox.classList.add('is-active');
       checkBox.innerHTML = '<i class="far fa-check-square"></i>';
       stats[index] = 'complete';
+      window.localStorage.setItem('status', JSON.stringify(stats));
     }
     else {
       newDiv.classList.remove('strikethrough');
       checkBox.classList.remove('is-active');
       checkBox.innerHTML = '<i class="far fa-square"></i>';
       stats[index] = 'pending';
+      window.localStorage.setItem('status', JSON.stringify(stats));
     }
-    console.log(stats[index]);
-    window.localStorage.setItem('status', JSON.stringify(stats));
+    window.location.reload();
   });
 
   editBtn.addEventListener('click', () => {
@@ -84,7 +86,10 @@ const renderNewHTML = (item, index) => {
   deleteBtn.addEventListener('click', () => {
     grandNewDiv.remove();
     const data = localStorageDownload().filter((val, i) => i !== index );
+    const stats = statsDownload().filter((val, i) => i !== index);
     window.localStorage.setItem('todos', JSON.stringify(data));
+    window.localStorage.setItem('status', JSON.stringify(stats));
+    window.location.reload();
   });
 };
 
@@ -112,11 +117,11 @@ const addItem = (todos) => {
   const data = localStorageDownload();
   const stats = statsDownload();
   const index = data.length;
-  stats[index] = 'pending';
-  window.localStorage.setItem('status', JSON.stringify(stats));
+
   renderNewHTML(todos.value, index);
   data[index] = todos.value;
-
+  stats[index] = 'pending';
+  window.localStorage.setItem('status', JSON.stringify(stats));
   window.localStorage.setItem('todos', JSON.stringify(data));
 
 
