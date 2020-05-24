@@ -1,6 +1,8 @@
 # TodoList
 Todo List App with JavaScript
 
+Link: https://mrlepak.github.io/TodoList/
+
 What is this app?
 Simple todo list that helps user tracks on what activities needed to be done!
 
