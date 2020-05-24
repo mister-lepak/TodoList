@@ -1,29 +1,29 @@
 const todos = document.querySelector('#todo');
 const addButton = document.querySelector('#addButton');
-const tasks = document.querySelector('#tasks');
-const tasksChildren = tasks.children;
 
 
-const renderNewHTML = () => {
+const renderNewHTML = (item) => {
   const grandNewDiv = document.createElement('div');
   grandNewDiv.classList.add('columns');
 
   const checkBox = document.createElement('input');
   checkBox.setAttribute('type', 'checkbox');
-  checkBox.classList.add('level-item');
   grandNewDiv.append(checkBox);
 
-  const newDiv = document.createElement('div');
-  newDiv.innerHTML = `${todos.value}`;
+  const newDiv = document.createElement('input');
+  newDiv.value = item;
+  // newDiv.innerHTML = `${todos.value}`;
+  newDiv.classList.add('input');
   newDiv.classList.add('column');
   newDiv.classList.add('box');
   newDiv.classList.add('is-four-fifths');
+  newDiv.disabled = true;
   grandNewDiv.append(newDiv);
 
-  const updateBtn = document.createElement('button');
-  updateBtn.classList.add('button');
-  updateBtn.innerHTML = '<i class="fas fa-edit"></i>';
-  grandNewDiv.append(updateBtn);
+  const editBtn = document.createElement('button');
+  editBtn.classList.add('button');
+  editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+  grandNewDiv.append(editBtn);
 
   const saveEditBtn = document.createElement('button');
   saveEditBtn.classList.add('button');
@@ -43,25 +43,47 @@ const renderNewHTML = () => {
     else {newDiv.classList.remove('strikethrough')}
   });
 
-  updateBtn.addEventListener('click', () => {
+  editBtn.addEventListener('click', () => {
     saveEditBtn.classList.remove('is-hidden');
-    updateBtn.classList.add('is-hidden');
+    editBtn.classList.add('is-hidden');
+    newDiv.disabled = false;
   });
 
   saveEditBtn.addEventListener('click', () => {
     saveEditBtn.classList.add('is-hidden');
-    updateBtn.classList.remove('is-hidden');
+    editBtn.classList.remove('is-hidden');
+    newDiv.disabled = true;
+    // window.localStorage.setItem(index, JSON.stringify(newDiv.value));
   });
 
   deleteBtn.addEventListener('click', () => {
     grandNewDiv.remove();
+    const data = localStorageDownload().filter(val => val !== item);
+    window.localStorage.setItem('todos', data.toString());
   });
 };
 
+const localStorageDownload = () => {
+  let existing = window.localStorage.getItem('todos');
+  existing = existing ? existing.split(',') : [];
+  return existing;
+};
+
+if(window.localStorage.length !== 0) {
+  const info = localStorageDownload();
+  for(i = 0; i < info.length; i++) {
+    renderNewHTML(info[i]);
+  }
+}
 
 
 const addItem = (todos) => {
-  renderNewHTML();
+  renderNewHTML(todos.value);
+
+  const data = localStorageDownload();
+  data.push(todos.value);
+  window.localStorage.setItem('todos', data.toString());
+
   todos.value = "";
 };
 
